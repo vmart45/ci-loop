@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+    inputs:
+      hours:
+        description: "Duration"
+        default: "5.5"
+        required: false
+      force:
+        description: "Ignore an already-running job"
+        default: "false"
+        required: false
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run
+        env:
+          API_URL: ${{ secrets.API_URL }}
+          DATA_REPO: ${{ secrets.DATA_REPO }}
+          DATA_BRANCH: ${{ secrets.DATA_BRANCH }}
+          DATA_SSH_KEY: ${{ secrets.DATA_SSH_KEY }}
+          JOB: ${{ secrets.JOB }}
+          HOURS: ${{ github.event.inputs.hours }}
+          FORCE: ${{ github.event.inputs.force }}
+          GH_TOKEN: ${{ github.token }}
+        run: bash run.sh
