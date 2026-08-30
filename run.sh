@@ -22,7 +22,7 @@ printf '%s\n' "${DATA_SSH_KEY}" > "${KEYFILE}"
 ssh-add "${KEYFILE}" >/dev/null
 rm -f "${KEYFILE}"
 
-git clone --depth 1 --single-branch --branch "${DATA_BRANCH:-main}" \
+git clone --depth 50 --single-branch --branch "${DATA_BRANCH:-main}" \
   "git@github.com:${DATA_REPO}.git" "${DATA_ROOT}"
 cd "${DATA_ROOT}"
 git config user.name "github-actions[bot]"
