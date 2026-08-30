@@ -29,18 +29,14 @@ git config user.name "github-actions[bot]"
 git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
 if [ "${CHECK:-false}" = "true" ]; then
-  python3 - <<'PY'
-import sys
-from pathlib import Path
-
-sys.path.insert(0, str(Path("collector").resolve()))
-from live_collector import fetch_slate
-
-games = fetch_slate(False)
-if not isinstance(games, list):
-    raise SystemExit("check failed")
-print(f"ok {len(games)}", flush=True)
-PY
+  python3 collector/test_capture.py --minutes "${MINUTES:-3}" --out data/test
+  git add data/test
+  if git diff --cached --quiet; then
+    echo "no files"
+    exit 1
+  fi
+  git commit -m "sync test"
+  git pull --rebase origin "${DATA_BRANCH:-main}" || true
   git push origin "HEAD:${DATA_BRANCH:-main}"
   echo ok
   exit 0
