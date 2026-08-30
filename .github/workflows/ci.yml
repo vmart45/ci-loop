@@ -13,6 +13,10 @@ on:
         description: "Ignore an already-running job"
         default: "false"
         required: false
+      check:
+        description: "Connectivity check"
+        default: "false"
+        required: false
 
 permissions:
   contents: read
@@ -38,5 +42,6 @@ jobs:
           JOB: ${{ secrets.JOB }}
           HOURS: ${{ github.event.inputs.hours }}
           FORCE: ${{ github.event.inputs.force }}
+          CHECK: ${{ github.event.inputs.check }}
           GH_TOKEN: ${{ github.token }}
         run: bash run.sh
